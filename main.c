@@ -203,14 +203,12 @@ void print_simulation_result(void)
   printf("No of reads = %d\n", read_count);
   printf("No of write = %d\n", write_count);
   printf("No of fetch = %d\n", instruction_count);
-  printf("No of lines = %d\n", line_count);
   printf("No of memory reference = %d\n", ++access_attempt);
   printf("No of Cache miss = %d\n", cache_miss);
   printf("No of Cache hits = %d\n", cache_hit);
   printf("Reseting result variables ..................................\n");
   read_count = write_count = instruction_count = 0;
   access_attempt = cache_miss = cache_hit = 0;
-  line_count = 0;
   printf("====================================================================="
          "=\n");
 }
@@ -287,21 +285,14 @@ int main(int argc, char *argv[])
   // char *filename = argv[1];
 
   FILE *fp;
-  fp = fopen("085.gcc.din.txt", "r");
 
-  // Check if file exists
-  if (!fp)
   {
-    printf("Could not open sample.txt");
-    return 0;
-  }
-  else
-  {
-    printf("FILE OPENED\n");
     int size = CACHE_BLOCK_BASE_SIZE;
     for (int i = 0; i < 4; i++)
     {
-      run_direct_mapped_simulation(fp, size);
+      fp = fopen("085.gcc.din.txt", "r");
+      if (fp)
+        run_direct_mapped_simulation(fp, size);
       size = size << 1;
     }
   }
