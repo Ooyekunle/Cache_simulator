@@ -225,15 +225,8 @@ void allocate_cahe_mem_block(int length, int width)
   cache_mem_block_ptr = (uint_fast8_t *)malloc(sizeof(length * width));
 }
 
-void run_direct_mapped_simulation(FILE *fp, Cache_Line_size_t size)
+void setup_cache_mem_block(int cache_line_size)
 {
-  printf("simulating cache of size %d KB, block size %d Bytes\n", 64, size);
-
-  uint32_t line_data[3];
-  uint32_t store = 0;
-  int i = 0;
-  line_size = size;
-
   int no_of_cache_line_offset_bits = 0;
   int no_of_cache_line_index_bits;
   int tag_table_size = 1;
@@ -241,10 +234,9 @@ void run_direct_mapped_simulation(FILE *fp, Cache_Line_size_t size)
 
   while (1)
   {
-    /* code */
-    size = size >> 1;
+    cache_line_size = cache_line_size >> 1;
     no_of_cache_line_offset_bits++;
-    if (size == 1)
+    if (cache_line_size == 1)
       break;
   }
 
@@ -262,8 +254,15 @@ void run_direct_mapped_simulation(FILE *fp, Cache_Line_size_t size)
 
   allocate_tag_table_block(tag_table_size);
   allocate_cahe_mem_block(tag_table_size, memory_width);
+}
 
+void run_direct_mapped_simulation(FILE *fp, Cache_Line_size_t size)
+{
+  printf("simulating cache of size %d KB, block size %d Bytes\n", 64, size);
   record_t record;
+  line_size = size;
+  setup_cache_mem_block(size);
+
   while (1)
   {
     fscanf(fp, "%x %x %x%*[\r\n]", &record.access_type, &record.address,
