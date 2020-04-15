@@ -264,7 +264,7 @@ void get_range(uint32_t set_index, int *min, int *max, int factor)
 {
   int search_offset = factor - 1;
   *min = set_index * factor;
-  *max = min + search_offset;
+  *max = *min + search_offset;
 }
 
 void update_block_with_fifo(uint32_t set_index, uint32_t tag_value, int factor)
@@ -279,12 +279,10 @@ void update_block_with_fifo(uint32_t set_index, uint32_t tag_value, int factor)
     {
       ++placement_count;
       tag_table_ptr[i] = tag_value;
+      return;
     }
-    else
-    {
-      ++replacement_count;
-      tag_table_ptr[min] == tag_value;
-    }
+    ++replacement_count;
+    tag_table_ptr[min] = tag_value;
   }
 }
 
@@ -314,7 +312,7 @@ int compare_set_value(uint32_t set_index, uint32_t tag_value, int factor)
   }
 }
 
-void process_record_associative(record_t * record,  int no_of_ways)
+void process_record_associative(record_t *record, int no_of_ways)
 {
   uint32_t tag_bits_value = extract_tag_associative(record->address);
   uint32_t set_bits_value = extract_set_associative(record->address);
@@ -358,9 +356,9 @@ void run_two_way_associative_simulation(FILE *fp, Cache_Line_size_t size, int no
     tag_block_size = tag_block_size << 1;
   }
 
-  printf("tag = %d\n", tag_bit_size);
-  printf("index = %d\n", shft_amt);
-  printf("offset = %d\n", address.offset_bit_size);
+  printf("No of tag bits = %d\n", tag_bit_size);
+  printf("No of index bits = %d\n", shft_amt);
+  printf("No of offset bits = %d\n", address.offset_bit_size);
 
   allocate_cahe_mem_block(set_index_size, width);
   allocate_tag_table_block(tag_block_size);
@@ -429,20 +427,24 @@ int main(int argc, char *argv[])
 
   FILE *fp;
 
+  int size = CACHE_BLOCK_BASE_SIZE;
+  for (int i = 0; i < 4; i++)
   {
-    int size = CACHE_BLOCK_BASE_SIZE;
-    for (int i = 0; i < 4; i++)
-    {
-      fp = fopen("085.gcc.din.txt", "r");
-      if (fp)
-        run_direct_mapped_simulation(fp, size);
-      size = size << 1;
-    }
+    fp = fopen("085.gcc.din.txt", "r");
+    if (fp)
+      run_direct_mapped_simulation(fp, size);
+    size = size << 1;
   }
 
-  int k = 2;
-  fp = fopen("085.gcc.din.txt", "r");
-  run_two_way_associative_simulation(fp, 32, k);
-
+  int k = 8;
+  size = CACHE_BLOCK_BASE_SIZE;
+  for (int i = 0; i < 4; i++)
+  {
+    fp = fopen("085.gcc.din.txt", "r");
+    if(fp)
+      run_two_way_associative_simulation(fp, size, k);
+    size = size << 1;
+  }
+  
   return 0;
 }
