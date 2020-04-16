@@ -11,7 +11,7 @@ Cache_Line_size_t line_size;
 int placement_count;
 int replacement_count;
 
-uint16_t *tag_table_ptr;
+uint32_t *tag_table_ptr;
 uint_fast8_t *cache_mem_block_ptr;
 
 // Look up table to kep the tag data
@@ -60,10 +60,10 @@ uint32_t mem_read(uint32_t index, uint32_t block_offset)
   // return data;
 }
 
-void update_tag_table(uint32_t index, uint32_t tag_value)
+void update_tag_table_direct(uint32_t index, uint32_t tag_value)
 {
   tag_table_ptr[index] =
-      (uint16_t)tag_value;
+      (uint32_t)tag_value;
 }
 
 int compare_tag_value(uint32_t index, uint32_t tag_value)
@@ -71,7 +71,7 @@ int compare_tag_value(uint32_t index, uint32_t tag_value)
   ++access_attempt;
 
   // if a use the tag pointer here instead of the global array, it breaks
-  if (tag_table_ptr[index] != (uint16_t)tag_value)
+  if (tag_table_ptr[index] != (uint32_t)tag_value)
   {
     ++cache_miss;
     return 0;
@@ -174,7 +174,7 @@ void process_record_direct(record_t *record)
 
   {
     // Update Cache block
-    update_tag_table(index_bits, tag_bits);
+    update_tag_table_direct(index_bits, tag_bits);
   }
 
   update_stats(record);
@@ -208,7 +208,7 @@ void print_simulation_result(void)
 void allocate_tag_table_block(int size)
 {
   printf("Allocating %d table block in memory\n", size);
-  tag_table_ptr = (uint16_t *)calloc(size, sizeof(uint16_t));
+  tag_table_ptr = (uint32_t *)calloc(size, sizeof(uint32_t));
 }
 
 void allocate_cahe_mem_block(int length, int width)
@@ -297,10 +297,7 @@ int compare_set_value(uint32_t set_index, uint32_t tag_value, int factor)
 {
   ++access_attempt;
   uint32_t min, max;
-  // if a use the tag pointer here instead of the global array, it breaks
-  // int search_offset = factor - 1;
-  // int min = set_index * factor;
-  // int max = min + search_offset;
+
   get_range(set_index, &min, &max, factor);
   int i = 0;
 
@@ -435,7 +432,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < 4; i++)
   {
     printf("RUNNING DIRECT MAPPED SIMULATION\n");
-    fp = fopen("085.gcc.din.txt", "r");
+    fp = fopen("047.tomcatv.din.txt", "r");
     if (fp)
       run_direct_mapped_simulation(fp, size);
     size = size << 1;

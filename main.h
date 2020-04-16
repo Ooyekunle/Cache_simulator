@@ -44,7 +44,7 @@ void process_record_direct(record_t * record);
 int compare_tag_value(uint32_t index, uint32_t tag_value);
 void mem_write(uint32_t index, uint32_t block_offset, uint32_t data);
 uint32_t mem_read(uint32_t index, uint32_t block_offset);
-void update_tag_table(uint32_t index, uint32_t tag_value);
+void update_tag_table_direct(uint32_t index, uint32_t tag_value);
 void print_simulation_result(void);
 void setup_cache_mem_block(int cache_line_size , address_node_t * address);
 void run_direct_mapped_simulation(FILE * fp, Cache_Line_size_t size);
