@@ -180,6 +180,11 @@ void process_record_direct(record_t *record)
   update_stats(record);
 }
 
+inline float get_hit_ratio()
+{
+  return (float)cache_hit / access_attempt * 100;
+}
+
 void print_simulation_result(void)
 {
   printf("No of reads = %d\n", read_count);
@@ -188,12 +193,14 @@ void print_simulation_result(void)
   printf("No of memory reference = %d\n", ++access_attempt);
   printf("No of Cache miss = %d\n", cache_miss);
   printf("No of Cache hits = %d\n", cache_hit);
+  printf("The cache hit ratio = %f \n", get_hit_ratio());
   printf("Total number of placement = %d\n", placement_count);
   printf("No of replacement = %d\n", replacement_count);
   printf("Simulation Completed\n");
   printf("Reseting result variables ..................................\n");
   read_count = write_count = instruction_count = 0;
   access_attempt = cache_miss = cache_hit = 0;
+  placement_count = replacement_count = 0;
   printf("====================================================================="
          "=\n");
 }
@@ -234,30 +241,30 @@ uint32_t extract_tag_associative(uint32_t address)
 
 uint32_t extract_set_associative(uint32_t address)
 {
-  uint32_t index_value;
+  uint32_t set_value;
 
   if (line_size == SIXTEEN_BYTES)
   {
-    index_value = address >> 4;
-    index_value = index_value & 0x000007ff;
+    set_value = address >> 4;
+    set_value = set_value & 0x000007ff;
   }
   else if (line_size == THIRTY_TWO_BYTES)
   {
-    index_value = address >> 5;
-    index_value = index_value & 0x000003ff;
+    set_value = address >> 5;
+    set_value = set_value & 0x000003ff;
   }
   else if (line_size == SIXTY_FOUR_BYTES)
   {
-    index_value = address >> 6;
-    index_value = index_value & 0x000001ff;
+    set_value = address >> 6;
+    set_value = set_value & 0x000001ff;
   }
   else
   {
-    index_value = address >> 7;
-    index_value = index_value & 0x000000ff;
+    set_value = address >> 7;
+    set_value = set_value & 0x000000ff;
   }
 
-  return index_value;
+  return set_value;
 }
 
 void get_range(uint32_t set_index, int *min, int *max, int factor)
@@ -281,9 +288,9 @@ void update_block_with_fifo(uint32_t set_index, uint32_t tag_value, int factor)
       tag_table_ptr[i] = tag_value;
       return;
     }
-    ++replacement_count;
-    tag_table_ptr[min] = tag_value;
   }
+  ++replacement_count;
+  tag_table_ptr[min] = tag_value;
 }
 
 int compare_set_value(uint32_t set_index, uint32_t tag_value, int factor)
@@ -304,12 +311,9 @@ int compare_set_value(uint32_t set_index, uint32_t tag_value, int factor)
       ++cache_hit;
       return 1;
     }
-    else
-    {
-      ++cache_miss;
-      return 0;
-    }
   }
+  ++cache_miss;
+  return 0;
 }
 
 void process_record_associative(record_t *record, int no_of_ways)
@@ -324,7 +328,7 @@ void process_record_associative(record_t *record, int no_of_ways)
   }
 }
 
-void run_two_way_associative_simulation(FILE *fp, Cache_Line_size_t size, int no_of_ways)
+void run_associativity(FILE *fp, Cache_Line_size_t size, int no_of_ways)
 {
   record_t record;
   address_node_t address;
@@ -357,7 +361,7 @@ void run_two_way_associative_simulation(FILE *fp, Cache_Line_size_t size, int no
   }
 
   printf("No of tag bits = %d\n", tag_bit_size);
-  printf("No of index bits = %d\n", shft_amt);
+  printf("No of Set bits = %d\n", shft_amt);
   printf("No of offset bits = %d\n", address.offset_bit_size);
 
   allocate_cahe_mem_block(set_index_size, width);
@@ -424,27 +428,39 @@ int main(int argc, char *argv[])
 {
   printf("The given argument is %s trace file\n", argv[1]);
   // char *filename = argv[1];
-
+  int associativity_size;
   FILE *fp;
-
   int size = CACHE_BLOCK_BASE_SIZE;
+
   for (int i = 0; i < 4; i++)
   {
+    printf("RUNNING DIRECT MAPPED SIMULATION\n");
     fp = fopen("085.gcc.din.txt", "r");
     if (fp)
       run_direct_mapped_simulation(fp, size);
     size = size << 1;
   }
 
-  int k = 8;
   size = CACHE_BLOCK_BASE_SIZE;
+  associativity_size = 2;
   for (int i = 0; i < 4; i++)
   {
+    printf("RUNNING 2-WAY ASSOCIATINVE with %dB cache line size \n", size);
     fp = fopen("085.gcc.din.txt", "r");
-    if(fp)
-      run_two_way_associative_simulation(fp, size, k);
+    if (fp)
+      run_associativity(fp, size, associativity_size);
     size = size << 1;
   }
-  
+
+  size = CACHE_BLOCK_BASE_SIZE;
+  associativity_size = 8;
+  for (int i = 0; i < 4; i++)
+  {
+    printf("RUNNING 8-WAY ASSOCIATINVE with %dB cache line size \n", size);
+    fp = fopen("085.gcc.din.txt", "r");
+    if (fp)
+      run_associativity(fp, size, associativity_size);
+    size = size << 1;
+  }
   return 0;
 }

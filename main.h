@@ -50,12 +50,12 @@ void setup_cache_mem_block(int cache_line_size , address_node_t * address);
 void run_direct_mapped_simulation(FILE * fp, Cache_Line_size_t size);
 
 void update_stats(record_t * record);
-
+float get_hit_ratio();
 uint32_t extract_tag_associative(uint32_t address);
 uint32_t extract_set_associative(uint32_t address);
 void process_record_associative(record_t *record,  int no_of_ways);
 
-void run_two_way_associative_simulation(FILE * fp, Cache_Line_size_t size, int no_of_ways);
+void run_associativity(FILE * fp, Cache_Line_size_t size, int no_of_ways);
 int compare_set_value(uint32_t set_index, uint32_t tag_value, int factor);
 void update_block_with_fifo(uint32_t set_index, uint32_t tag_value, int factor);
 void get_range(uint32_t set_index, int *min, int *max, int factor);
