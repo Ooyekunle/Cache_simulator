@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
-#include <string.h>
 
 
 typedef enum access_type{
@@ -49,6 +48,7 @@ void update_tag_table_direct(uint32_t index, uint32_t tag_value);
 void print_simulation_result(void);
 void setup_cache_mem_block(int cache_line_size , address_node_t * address);
 void run_direct_mapped_simulation(FILE * fp, Cache_Line_size_t size);
+void update_tag_table_associative(uint32_t set_value, uint32_t tag_value);
 
 void update_stats(record_t * record);
 float get_hit_ratio();
@@ -60,6 +60,7 @@ void run_associativity(FILE * fp, Cache_Line_size_t size, int no_of_ways);
 int compare_set_value(uint32_t set_index, uint32_t tag_value, int factor);
 void update_block_with_fifo(uint32_t set_index, uint32_t tag_value, int factor);
 void get_range(uint32_t set_index, int *min, int *max, int factor);
+void process_file(const char *);
 
 
 void allocate_cahe_mem_block(int length, int width);
