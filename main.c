@@ -450,7 +450,6 @@ void process_file(const char *filename)
     size = size << 1;
   }
 
-  //size = CACHE_BLOCK_BASE_SIZE;
   associativity_size = 2;
   for (int j = 0; j < 3; j++)
   {
@@ -472,151 +471,10 @@ void process_file(const char *filename)
 
 int main(int argc, char *argv[])
 {
-  printf("The given argument is %s trace file\n", argv[1]);
-  // char actual_file[30];
-  // char file0[] = "022.li.din.txt";
-  // char file1[] = "085.gcc.din";
-  // char file2[] = "047.tomcatv.din.txt";
-  // char file3[] = "085.gcc.din.txt";
-  // int associativity_size;
-  // FILE *fp;
-  // int size = CACHE_BLOCK_BASE_SIZE;
-
-  // for (int i = 0; i < 4; i++)
-  // {
-  //   printf("RUNNING DIRECT MAPPED SIMULATION\n");
-  //   fp = fopen("022.li.din.txt", "r");
-  //   if (fp)
-  //   {
-  //     printf("%s\n", "022.li.din.txt");
-  //     run_direct_mapped_simulation(fp, size);
-  //   }
-  //   size = size << 1;
-  // }
-
-  // //size = CACHE_BLOCK_BASE_SIZE;
-  // associativity_size = 2;
-  // for (int j = 0; j < 3; j++)
-  // {
-  //   size = CACHE_BLOCK_BASE_SIZE;
-  //   for (int i = 0; i < 4; i++)
-  //   {
-  //     printf("RUNNING %d-WAY ASSOCIATINVE with %dB cache line size \n", associativity_size, size);
-  //     fp = fopen("022.li.din.txt", "r");
-  //     if (fp)
-  //     {
-  //       printf("%s\n", "022.li.din.txt");
-  //       run_associativity(fp, size, associativity_size);
-  //     }
-  //     size = size << 1;
-  //   }
-  //   associativity_size = associativity_size << 1;
-  // }
-
-
+  
   process_file("022.li.din.txt");
   process_file("085.gcc.din");
   process_file("047.tomcatv.din.txt");
   process_file("078.swm256.din.txt");
-
-
-  // size = CACHE_BLOCK_BASE_SIZE;
-  // for (int i = 0; i < 4; i++)
-  // {
-  //   printf("RUNNING DIRECT MAPPED SIMULATION\n");
-  //   fp = fopen("085.gcc.din", "r");
-  //   if (fp)
-  //   {
-  //     printf("%s\n", "085.gcc.din");
-  //     run_direct_mapped_simulation(fp, size);
-  //   }
-  //   size = size << 1;
-  // }
-
-  // //size = CACHE_BLOCK_BASE_SIZE;
-  // associativity_size = 2;
-  // for (int j = 0; j < 3; j++)
-  // {
-  //   size = CACHE_BLOCK_BASE_SIZE;
-  //   for (int i = 0; i < 4; i++)
-  //   {
-  //     printf("RUNNING %d-WAY ASSOCIATINVE with %dB cache line size \n", associativity_size, size);
-  //     fp = fopen("085.gcc.din", "r");
-  //     if (fp)
-  //     {
-  //       printf("%s\n", "085.gcc.din");
-  //       run_associativity(fp, size, associativity_size);
-  //     }
-
-  //     size = size << 1;
-  //   }
-  //   associativity_size = associativity_size << 1;
-  // }
-
-  // size = CACHE_BLOCK_BASE_SIZE;
-  // for (int i = 0; i < 4; i++)
-  // {
-  //   printf("RUNNING DIRECT MAPPED SIMULATION\n");
-  //   fp = fopen("047.tomcatv.din.txt", "r");
-  //   if (fp)
-  //   {
-
-  //     run_direct_mapped_simulation(fp, size);
-  //   }
-  //   size = size << 1;
-  // }
-
-  // //size = CACHE_BLOCK_BASE_SIZE;
-  // associativity_size = 2;
-  // for (int j = 0; j < 3; j++)
-  // {
-  //   size = CACHE_BLOCK_BASE_SIZE;
-  //   for (int i = 0; i < 4; i++)
-  //   {
-  //     printf("RUNNING %d-WAY ASSOCIATINVE with %dB cache line size \n", associativity_size, size);
-  //     fp = fopen("047.tomcatv.din.txt", "r");
-  //     if (fp)
-  //     {
-  //       printf("%s\n", "047.tomcatv.din.txt");
-  //       run_associativity(fp, size, associativity_size);
-  //     }
-  //     size = size << 1;
-  //   }
-  //   associativity_size = associativity_size << 1;
-  // }
-
-  // size = CACHE_BLOCK_BASE_SIZE;
-  // for (int i = 0; i < 4; i++)
-  // {
-  //   printf("RUNNING DIRECT MAPPED SIMULATION\n");
-  //   fp = fopen("078.swm256.din.txt", "r");
-  //   if (fp)
-  //   {
-  //     printf("%s\n", "078.swm256.din.txt");
-  //     run_direct_mapped_simulation(fp, size);
-  //   }
-  //   size = size << 1;
-  // }
-
-  // //size = CACHE_BLOCK_BASE_SIZE;
-  // associativity_size = 2;
-  // for (int j = 0; j < 3; j++)
-  // {
-  //   size = CACHE_BLOCK_BASE_SIZE;
-  //   for (int i = 0; i < 4; i++)
-  //   {
-  //     printf("RUNNING %d-WAY ASSOCIATINVE with %dB cache line size \n", associativity_size, size);
-  //     fp = fopen("078.swm256.din.txt", "r");
-  //     if (fp)
-  //     {
-  //       printf("%s\n", "078.swm256.din.txt");
-  //       run_associativity(fp, size, associativity_size);
-  //     }
-
-  //     size = size << 1;
-  //   }
-  //   associativity_size = associativity_size << 1;
-  // }
-
   return 0;
 }
