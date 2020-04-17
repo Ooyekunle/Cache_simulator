@@ -1,5 +1,6 @@
 #include "main.h"
 
+#define FREE_TAG (1UL << 31)
 int read_count;
 int write_count;
 int instruction_count;
@@ -282,7 +283,7 @@ void update_block_with_fifo(uint32_t set_index, uint32_t tag_value, int factor)
 
   for (i = min; i < max + 1; i++)
   {
-    if (tag_table_ptr[i] == 0)
+    if (tag_table_ptr[i] == FREE_TAG)
     {
       ++placement_count;
       tag_table_ptr[i] = tag_value;
@@ -290,7 +291,12 @@ void update_block_with_fifo(uint32_t set_index, uint32_t tag_value, int factor)
     }
   }
   ++replacement_count;
-  tag_table_ptr[min] = tag_value;
+  for (i = min; i < max; i++)
+
+  {
+    tag_table_ptr[i] = tag_table_ptr[i + 1];
+  }
+  tag_table_ptr[i] = tag_value; // i==max
 }
 
 int compare_set_value(uint32_t set_index, uint32_t tag_value, int factor)
@@ -363,6 +369,11 @@ void run_associativity(FILE *fp, Cache_Line_size_t size, int no_of_ways)
 
   allocate_cahe_mem_block(set_index_size, width);
   allocate_tag_table_block(tag_block_size);
+
+  for (i = 0; i < tag_block_size; i++)
+  {
+    tag_table_ptr[i] = FREE_TAG;
+  }
 
   while (1)
   {
